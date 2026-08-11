@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hacker House Goa 2026 — Build · Connect · Vibe</title>
+<meta name="description" content="Register your build, pick your role, and generate your official Hacker House Goa 2026 builder ID card.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./style.css?v=2">
+</head>
+<body>
+
+<!-- ============ INTRO / SHUTTER OPEN ANIMATION ============ -->
+<div class="intro" id="intro" aria-hidden="true">
+  <div class="intro-sky">
+    <div class="intro-sun"></div>
+  </div>
+  <div class="intro-shutter intro-shutter--left">
+    <span class="intro-hut-text">CAFÉ</span>
+  </div>
+  <div class="intro-shutter intro-shutter--right">
+    <span class="intro-hut-text">GOA</span>
+  </div>
+  <div class="intro-mark">
+    <span class="hh">HH</span>
+    <span class="intro-sub">HACKER HOUSE · GOA 2026</span>
+  </div>
+</div>
+
+<!-- ============ NAV ============ -->
+<header class="nav">
+  <a href="#top" class="nav-mark">HH<span>·</span><small>GOA 26</small></a>
+  <nav class="nav-links">
+    <a href="#register">Register</a>
+    <a href="#card">Builder ID</a>
+  </nav>
+  <a href="#register" class="btn btn-ghost nav-cta">Get your badge</a>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-scene" aria-hidden="true">
+    <div class="scene-sky">
+      <div class="scene-sun"></div>
+      <div class="bird bird-1"></div>
+      <div class="bird bird-2"></div>
+      <div class="bird bird-3"></div>
+      <div class="swinging-bottle">
+        <div class="rope"></div>
+        <div class="bottle">🍾</div>
+      </div>
+    </div>
+    <svg class="scene-water" viewBox="0 0 1600 300" preserveAspectRatio="none">
+      <path class="wave wave-1" d="M0,60 C 200,20 400,100 700,60 C 1000,20 1300,100 1600,60 L1600,300 L0,300 Z"></path>
+      <path class="wave wave-2" d="M0,90 C 250,50 450,130 750,90 C 1050,50 1350,130 1600,90 L1600,300 L0,300 Z"></path>
+    </svg>
+    <div class="scene-shore"></div>
+    <div class="palm palm-a">
+      <div class="palm-trunk"></div>
+      <div class="palm-leaves">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="palm palm-b">
+      <div class="palm-trunk"></div>
+      <div class="palm-leaves">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="palm palm-c">
+      <div class="palm-trunk"></div>
+      <div class="palm-leaves">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <p class="eyebrow">08 – 10 JAN 2026 · VAGATOR, GOA</p>
+    <h1 class="hero-title">Hacker House<br><span>Goa 2026</span></h1>
+    <p class="hero-tagline">BUILD <span class="dot">•</span> CONNECT <span class="dot">•</span> VIBE</p>
+    <p class="hero-copy">Three days on the sand with your laptop, your team, and one shipped build. Register your project, and walk away with a builder ID that proves you were in the house.</p>
+    <div class="hero-actions">
+      <a href="#register" class="btn btn-primary">Register your build</a>
+    </div>
+  </div>
+  <div class="scroll-cue" aria-hidden="true"><span></span> scroll</div>
+</section>
+
+<!-- ============ REGISTER FORM ============ -->
+<section class="register" id="register">
+  <div class="register-intro">
+    <p class="section-eyebrow">01 — Check in</p>
+    <h2 class="section-title">Build your builder profile.</h2>
+    <p class="section-copy">Fill this once. We'll turn it into your official Hacker House Goa 2026 badge — front and back — ready to download and print.</p>
+    <ul class="register-notes">
+      <li>Your photo sits inside the badge frame, so use something square-ish and well lit.</li>
+      <li>Everything below is generated client-side — nothing leaves your browser.</li>
+    </ul>
+  </div>
+
+  <form class="builder-form" id="builderForm" autocomplete="off">
+    <div class="field">
+      <label for="fName">Name</label>
+      <input type="text" id="fName" name="name" placeholder="e.g. Zoya Fernandes" required maxlength="40">
+    </div>
+
+    <div class="field">
+      <label for="fTitle">Builder title</label>
+      <input type="text" id="fTitle" name="title" placeholder="e.g. Full-Stack Builder" required maxlength="40">
+    </div>
+
+    <div class="field">
+      <label for="fTeam">Team code</label>
+      <input type="text" id="fTeam" name="team" placeholder="e.g. BEACHBYTES" required maxlength="20">
+    </div>
+
+    <div class="field">
+      <label for="fStack">Tech stack</label>
+      <input type="text" id="fStack" name="stack" placeholder="React, Node.js, Supabase" required maxlength="60">
+      <p class="field-hint">Comma-separated. Shows up as tags on the back of your card.</p>
+    </div>
+
+    <div class="field" id="socialFieldContainer">
+      <label>Social / tap link</label>
+      <div id="socialsWrapper" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="social-row" style="display:flex; gap:10px;">
+          <select class="social-platform" name="platform" style="background: var(--green-ink); border: 1px solid var(--green-line); border-radius: var(--radius-sm); padding: 13px 10px; color: var(--cream); font-family: var(--font-body); font-size: .95rem; outline:none; flex: 0 0 120px;">
+            <option value="Twitter/X">Twitter/X</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="GitHub">GitHub</option>
+            <option value="Instagram">Instagram</option>
+            <option value="Website">Website</option>
+            <option value="Linktree">Linktree</option>
+            <option value="Other">Other</option>
+          </select>
+          <input type="text" class="social-input" name="socialUrl" placeholder="@handle or URL" required maxlength="60" style="flex:1;">
+          <button type="button" class="social-remove" style="display:none; background:none; border:none; color:var(--terracotta-soft); font-size:1.5rem; cursor:pointer;" title="Remove social">×</button>
+        </div>
+      </div>
+      <button type="button" class="btn btn-ghost btn-small" id="addSocialBtn" style="align-self: flex-start; margin-top: 8px;">+ Add social</button>
+    </div>
+
+    <div class="field">
+      <label for="fPhoto">Your photo</label>
+      <div class="photo-upload">
+        <div class="photo-preview" id="photoPreview"><span>No photo</span></div>
+        <label for="fPhoto" class="btn btn-outline btn-small">Choose photo</label>
+        <input type="file" id="fPhoto" name="photo" accept="image/*" required>
+      </div>
+      
+      <div class="photo-adjuster" id="photoAdjuster" style="display:none; flex-direction:column; gap:12px; background:var(--green-ink); border:1px solid var(--green-line); border-radius:var(--radius-md); padding:16px; margin-top:8px;">
+        <div style="display:flex; justify-content:center;">
+          <canvas id="adjCanvas" width="160" height="160" style="border:3px solid var(--gold); border-radius:50%; cursor:grab; touch-action:none;"></canvas>
+        </div>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <label style="color:var(--gold); font-size:0.8rem; white-space:nowrap;">Zoom <span id="adjZoomLabel">1.0×</span></label>
+          <button type="button" id="adjZoomOut" class="btn btn-outline btn-small" style="padding:4px 8px; min-width:auto; margin-left:auto;">−</button>
+          <input type="range" id="adjZoom" min="0.5" max="3" step="0.01" value="1" style="flex:1; accent-color:var(--gold);">
+          <button type="button" id="adjZoomIn" class="btn btn-outline btn-small" style="padding:4px 8px; min-width:auto;">+</button>
+        </div>
+        <div style="text-align:center;">
+          <button type="button" id="adjReset" style="background:none; border:none; color:var(--cream); opacity:0.7; font-size:0.8rem; cursor:pointer; text-decoration:underline;">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="field field-wide form-submit-row">
+      <button type="submit" class="btn btn-primary btn-large" id="generateBtn">Generate my builder ID</button>
+      <p class="field-hint" id="formError" role="alert"></p>
+    </div>
+  </form>
+</section>
+
+<!-- ============ CARD PREVIEW ============ -->
+<section class="card-section" id="card">
+  <p class="section-eyebrow">02 — Your badge</p>
+  <h2 class="section-title">Tap to flip. Download both sides.</h2>
+  <p class="section-copy">This is what gets printed and laminated at check-in. Keep it around your neck all weekend.</p>
+
+  <div class="card-stage">
+    <div class="card-flip" id="cardFlip" tabindex="0" role="button" aria-label="Flip badge">
+      <div class="card-flip-inner" id="cardFlipInner">
+        <canvas id="canvasFront" class="card-face card-face--front" width="1088" height="1445"></canvas>
+        <canvas id="canvasBack" class="card-face card-face--back" width="1088" height="1445"></canvas>
+      </div>
+    </div>
+    <p class="card-hint">click the card to flip →</p>
+  </div>
+
+  <div class="card-actions">
+    <button class="btn btn-primary" id="downloadCard">Download my card</button>
+    <button class="btn btn-outline" id="shareTwitter"><span style="font-family: var(--font-display); margin-right: 6px; font-size: 1.1em;">𝕏</span> Share on 𝕏</button>
+    <button class="btn btn-ghost" id="regenerateBtn">Start over</button>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="footer-mark">HH</div>
+  <p>Hacker House Goa 2026 · Build · Connect · Vibe</p>
+  <p class="footer-fine">Made for the builders sleeping on the beach between commits.</p>
+</footer>
+
+<div id="toast" class="toast" aria-hidden="true" style="position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(150%); background:var(--green-jungle); border:1px solid var(--gold); color:var(--cream); padding:12px 24px; border-radius:var(--radius-sm); z-index:9999; font-family:var(--font-mono); font-size:0.85rem; transition:transform 0.4s var(--ease); box-shadow:0 10px 25px rgba(0,0,0,0.5);">Card downloaded — attach it to your tweet! 🌴</div>
+<div id="qrCodeContainer" style="display:none;"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./config.js?v=3"></script>
+<script src="./script.js?v=3"></script>
+</body>
+</html>
