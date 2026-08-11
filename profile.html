@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Builder profile · Hacker House Goa 2026</title>
+  <link rel="stylesheet" href="./style.css">
+  <style>
+    body{min-height:100vh;background:var(--green-ink);color:var(--cream);display:flex;align-items:center;justify-content:center;padding:24px}
+    .profile{width:min(620px,100%);background:var(--green-jungle);border:1px solid var(--gold);border-radius:22px;padding:32px;box-shadow:0 24px 70px rgba(0,0,0,.45)}
+    .profile-mark{color:var(--gold);font:900 56px/1 var(--font-display);letter-spacing:-.08em}
+    .profile-kicker{color:var(--gold);font:600 .75rem var(--font-mono);letter-spacing:.14em;text-transform:uppercase;margin:18px 0 8px}
+    h1{font:900 clamp(2rem,7vw,3.5rem)/.95 var(--font-display);margin:0 0 10px}
+    .profile-title{font-size:1.1rem;opacity:.8;margin:0 0 24px}
+    .profile-meta{display:grid;gap:10px;border-top:1px solid var(--green-line);border-bottom:1px solid var(--green-line);padding:18px 0;margin-bottom:24px}
+    .profile-meta strong{color:var(--gold);font:600 .72rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:3px}
+    .profile-meta span{font-size:1rem}
+    .socials{display:grid;gap:10px}.socials a{display:flex;justify-content:space-between;gap:16px;padding:14px 16px;border:1px solid var(--green-line);border-radius:10px;color:var(--cream);text-decoration:none}.socials a:hover{border-color:var(--gold);color:var(--gold)}
+    .error{text-align:center;color:#ffcf66;font-family:var(--font-mono)}
+  </style>
+</head>
+<body>
+  <main class="profile" id="profile"><div class="error">Loading builder profile…</div></main>
+  <script>
+    const root = document.getElementById('profile');
+    try {
+      const encoded = new URLSearchParams(location.search).get('data');
+      if (!encoded) throw new Error('Missing profile data');
+      const binary = atob(encoded.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - encoded.length % 4) % 4));
+      const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+      const data = JSON.parse(new TextDecoder().decode(bytes));
+      const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
+      const safeUrl = value => { try { const url = new URL(value); return /^https?:$/.test(url.protocol) ? url.href : '#'; } catch (_) { return '#'; } };
+      const links = (data.socials || []).map(s => `<a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener"><span>${esc(s.platform)}</span><span>↗</span></a>`).join('');
+      root.innerHTML = `<div class="profile-mark">HH</div><div class="profile-kicker">Hacker House Goa 2026 · Builder</div><h1>${esc(data.name)}</h1><p class="profile-title">${esc(data.title)}</p><div class="profile-meta"><div><strong>Builder ID</strong><span>${esc(data.builderId)}</span></div><div><strong>Team</strong><span>${esc(data.team)}</span></div><div><strong>Tech stack</strong><span>${esc(data.stack)}</span></div></div><div class="profile-kicker">Connect with ${esc(data.name)}</div><div class="socials">${links || '<p>No social links added.</p>'}</div>`;
+    } catch (error) {
+      root.innerHTML = '<p class="error">This builder profile link is invalid or incomplete.</p>';
+    }
+  </script>
+</body>
+</html>
