@@ -264,8 +264,23 @@
         correctLevel : QRCode.CorrectLevel.H
       });
       setTimeout(() => {
-        const canvas = qrContainer.querySelector("canvas");
-        resolve(canvas);
+        // QRCode.js may render a canvas or an image. Normalize either result
+        // to a canvas so the preview and downloaded back use the same QR.
+        const qrCanvas = qrContainer.querySelector("canvas");
+        if (qrCanvas) {
+          resolve(qrCanvas);
+          return;
+        }
+        const qrImage = qrContainer.querySelector("img");
+        if (!qrImage) {
+          resolve(null);
+          return;
+        }
+        const normalized = document.createElement("canvas");
+        normalized.width = 400;
+        normalized.height = 400;
+        normalized.getContext("2d").drawImage(qrImage, 0, 0, 400, 400);
+        resolve(normalized);
       }, 50); // wait for qr to render
     });
   }
@@ -524,6 +539,27 @@
     ctx.closePath();
   }
 
+  function encodeProfileData(data){
+    const profile = {
+      name: data.name,
+      title: data.title,
+      team: data.team,
+      stack: data.stack,
+      builderId: data.builderId,
+      socials: data.socials
+    };
+    const bytes = new TextEncoder().encode(JSON.stringify(profile));
+    let binary = "";
+    bytes.forEach(byte => binary += String.fromCharCode(byte));
+    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+
+  function makeProfileUrl(data){
+    const url = new URL("profile.html", window.location.href);
+    url.searchParams.set("data", encodeProfileData(data));
+    return url.href;
+  }
+
   /* ---------------- FORM SUBMIT ---------------- */
   const form = document.getElementById("builderForm");
   const formError = document.getElementById("formError");
@@ -576,13 +612,24 @@
     }
     generateBtn.textContent = "Generating badge...";
 
-    const primaryUrl = socialsList[0].url;
-    console.log("Encoded QR:", primaryUrl);
-    const qrCanvas = await generateQRCode(primaryUrl);
+    const profileData = {
+      name, title, team, stack, socials: socialsList,
+      builderId: makeBuilderId()
+    };
+    const profileUrl = makeProfileUrl(profileData);
+    console.log("Encoded QR profile:", profileUrl);
+    const qrCanvas = await generateQRCode(profileUrl);
+
+    if (!qrCanvas) {
+      formError.textContent = "The QR code could not be generated. Refresh and try again.";
+      generateBtn.disabled = false;
+      generateBtn.textContent = "Generate my builder ID";
+      return;
+    }
 
     currentData = {
       name, title, team, stack, socials: socialsList,
-      builderId: makeBuilderId(),
+      builderId: profileData.builderId,
       photoImage,
       photoTransform,
       qrCanvas
@@ -604,9 +651,14 @@
 
   /* ---------------- FLIP ---------------- */
   const cardFlip = document.getElementById("cardFlip");
-  cardFlip.addEventListener("click", () => cardFlip.classList.toggle("is-flipped"));
+  function toggleCardFlip(){
+    const flipped = cardFlip.classList.toggle("is-flipped");
+    cardFlip.setAttribute("aria-pressed", String(flipped));
+    cardFlip.setAttribute("aria-label", flipped ? "Show front of badge" : "Show back of badge");
+  }
+  cardFlip.addEventListener("click", toggleCardFlip);
   cardFlip.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); cardFlip.classList.toggle("is-flipped"); }
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); toggleCardFlip(); }
   });
 
   /* ---------------- DOWNLOAD & SHARE ---------------- */
@@ -638,7 +690,7 @@
     downloadCombinedCard(); // trigger download
     
     const stackSnippet = currentData.stack.split(",").slice(0, 3).map(s=>s.trim()).join(" + ");
-    const tweetText = `Just checked in at Hacker House Goa 2026 🌴\n\nBuilding with ${stackSnippet} · Team ${currentData.team.toUpperCase()}\n\n${currentData.socials[0].url}\n\n#HackerHouseGoa #HHG2026 #BuildConnectVibe`;
+    const tweetText = `Just checked in at Hacker House Goa 2026 🌴\n\nBuilding with ${stackSnippet} · Team ${currentData.team.toUpperCase()}\n\n${currentData.socials[0].url}\n\n#HackerHouseGoa #HHG2026 #FrameInGoa #BuildConnectVibe`;
     
     window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`, "_blank");
     

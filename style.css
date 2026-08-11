@@ -410,18 +410,18 @@ input[type="file"]{ display:none; }
 }
 .card-flip-inner{
   position:relative; width:100%; height:100%;
-  transform-style: preserve-3d;
-  transition: transform .8s var(--ease);
+  transition: opacity .2s ease;
   filter: drop-shadow(0 30px 60px rgba(0,0,0,.55));
 }
-.card-flip.is-flipped .card-flip-inner{ transform: rotateY(180deg); }
 .card-face{
   position:absolute; inset:0; width:100%; height:100%;
   border-radius: 22px;
-  backface-visibility: hidden;
   background: var(--green-jungle);
 }
-.card-face--back{ transform: rotateY(180deg); }
+.card-face--front{ visibility:visible; }
+.card-face--back{ visibility:hidden; }
+.card-flip.is-flipped .card-face--front{ visibility:hidden; }
+.card-flip.is-flipped .card-face--back{ visibility:visible; }
 .card-hint{ font-family: var(--font-mono); font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; opacity:.5; }
 .card-actions{ margin-top: 40px; display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
 
