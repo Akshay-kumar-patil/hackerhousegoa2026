@@ -245,10 +245,12 @@
     });
   }
   let templateFrontHole = null, templateBack = null;
-  Promise.all([loadImage(TEMPLATE_FRONT_HOLE), loadImage(TEMPLATE_BACK)]).then(([f,b]) => {
+  const templateAssetsReady = Promise.all([loadImage(TEMPLATE_FRONT_HOLE), loadImage(TEMPLATE_BACK)]).then(([f,b]) => {
     templateFrontHole = f; templateBack = b;
+    return true;
   }).catch(() => {
     // template failed to load — form will still validate, generation will alert
+    return false;
   });
 
   function generateQRCode(text) {
@@ -262,7 +264,7 @@
         // Keep the QR camera-friendly: dark modules on a white background.
         colorDark : "#0b2818",
         colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
+        correctLevel : QRCode.CorrectLevel.M
       });
       const resolveQr = () => {
         // QRCode.js may render a canvas or an image. Normalize either result
@@ -414,8 +416,8 @@
     // Give phone cameras a larger, unobstructed QR target on the card.
     const qrSize = 220;
     const qrY = H - 300;
-    const profileQrX = W - 340;
-    const right = profileQrX - 40;
+    const qrX = W - 340;
+    const right = qrX - 40;
     const contentW = right - left;
 
     function divider(yy){
@@ -527,7 +529,7 @@
       ctx.fillStyle = "#f0b429";
       ctx.fillText(labelText, qrX + qrSize/2, qrY + qrSize + 34);
     }
-    drawQr(data.qrCanvas, profileQrX, "SCAN TO CONNECT");
+    drawQr(data.qrCanvas, qrX, "SCAN TO CONNECT");
   }
 
   function roundRect(ctx, x, y, w, h, r){
@@ -538,31 +540,6 @@
     ctx.arcTo(x, y+h, x, y, r);
     ctx.arcTo(x, y, x+w, y, r);
     ctx.closePath();
-  }
-
-  function encodeProfileData(data){
-    // Short keys plus URI-safe compression keep the profile QR easy to scan.
-    const profile = {
-      n: data.name,
-      t: data.title,
-      e: data.team,
-      k: data.stack,
-      b: data.builderId,
-      l: data.socials.map(s => ({ p: s.platform, u: s.url }))
-    };
-    if (window.LZString) return "lz." + LZString.compressToEncodedURIComponent(JSON.stringify(profile));
-    const bytes = new TextEncoder().encode(JSON.stringify(profile));
-    let binary = "";
-    bytes.forEach(byte => binary += String.fromCharCode(byte));
-    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-  }
-
-  function makeProfileUrl(data){
-    // Always point the QR at this deployed website, never at a local file or
-    // a temporary route from which the badge was generated.
-    const url = new URL("/profile.html", window.location.origin);
-    url.searchParams.set("data", encodeProfileData(data));
-    return url.href;
   }
 
   /* ---------------- FORM SUBMIT ---------------- */
@@ -603,12 +580,8 @@
     generateBtn.textContent = "Loading badge art…";
     
     if (!templateFrontHole || !templateBack){
-      try{
-        await Promise.race([
-          Promise.all([loadImage(TEMPLATE_FRONT_HOLE), loadImage(TEMPLATE_BACK)]).then(([f,b])=>{templateFrontHole=f;templateBack=b;}),
-          new Promise((_,rej)=>setTimeout(rej, 6000))
-        ]);
-      }catch(err){
+      const assetsReady = await templateAssetsReady;
+      if (!assetsReady){
         formError.textContent = "Badge artwork couldn't load. Check that the assets/ folder is next to index.html.";
         generateBtn.disabled = false;
         generateBtn.textContent = "Generate my builder ID";
@@ -617,13 +590,11 @@
     }
     generateBtn.textContent = "Generating badge...";
 
-    const profileData = {
-      name, title, team, stack, socials: socialsList,
-      builderId: makeBuilderId()
-    };
-    const profileUrl = makeProfileUrl(profileData);
-    console.log("Encoded QR profile:", profileUrl);
-    const qrCanvas = await generateQRCode(profileUrl);
+    // Keep the QR short and reliable: encode only the first social URL.
+    const socialUrl = socialsList[0].url.trim();
+    const qrUrl = /^https?:\/\//i.test(socialUrl) ? socialUrl : `https://${socialUrl}`;
+    console.log("Encoded QR social link:", qrUrl);
+    const qrCanvas = await generateQRCode(qrUrl);
 
     if (!qrCanvas) {
       formError.textContent = "The QR code could not be generated. Refresh and try again.";
@@ -634,19 +605,11 @@
 
     currentData = {
       name, title, team, stack, socials: socialsList,
-      builderId: profileData.builderId,
+      builderId: makeBuilderId(),
       photoImage,
       photoTransform,
       qrCanvas
     };
-
-    // make sure custom fonts are actually loaded before drawing to canvas,
-    // otherwise the first render can fall back to a system font
-    if (document.fonts && document.fonts.ready){
-      try{
-        await Promise.race([document.fonts.ready, new Promise(resolve => setTimeout(resolve, 120))]);
-      }catch(e){}
-    }
 
     renderFront(canvasFront, currentData);
     renderBack(canvasBack, currentData);
