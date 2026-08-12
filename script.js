@@ -536,14 +536,16 @@
   }
 
   function encodeProfileData(data){
+    // Short keys plus URI-safe compression keep the profile QR easy to scan.
     const profile = {
-      name: data.name,
-      title: data.title,
-      team: data.team,
-      stack: data.stack,
-      builderId: data.builderId,
-      socials: data.socials
+      n: data.name,
+      t: data.title,
+      e: data.team,
+      k: data.stack,
+      b: data.builderId,
+      l: data.socials.map(s => ({ p: s.platform, u: s.url }))
     };
+    if (window.LZString) return "lz." + LZString.compressToEncodedURIComponent(JSON.stringify(profile));
     const bytes = new TextEncoder().encode(JSON.stringify(profile));
     let binary = "";
     bytes.forEach(byte => binary += String.fromCharCode(byte));

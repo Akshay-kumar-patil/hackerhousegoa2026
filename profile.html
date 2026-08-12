@@ -21,14 +21,23 @@
 </head>
 <body>
   <main class="profile" id="profile"><div class="error">Loading builder profile…</div></main>
+  <script src="https://cdn.jsdelivr.net/npm/lz-string@1.5.0/libs/lz-string.min.js"></script>
   <script>
     const root = document.getElementById('profile');
     try {
       const encoded = new URLSearchParams(location.search).get('data');
       if (!encoded) throw new Error('Missing profile data');
-      const binary = atob(encoded.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - encoded.length % 4) % 4));
-      const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
-      const data = JSON.parse(new TextDecoder().decode(bytes));
+      let data;
+      if (encoded.startsWith('lz.')) {
+        const compressed = encoded.slice(3);
+        const compact = LZString.decompressFromEncodedURIComponent(compressed);
+        const value = JSON.parse(compact);
+        data = { name:value.n, title:value.t, team:value.e, stack:value.k, builderId:value.b, socials:(value.l || []).map(s => ({ platform:s.p, url:s.u })) };
+      } else {
+        const binary = atob(encoded.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - encoded.length % 4) % 4));
+        const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+        data = JSON.parse(new TextDecoder().decode(bytes));
+      }
       const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
       const safeUrl = value => { try { const url = new URL(value); return /^https?:$/.test(url.protocol) ? url.href : '#'; } catch (_) { return '#'; } };
       const links = (data.socials || []).map(s => `<a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener"><span>${esc(s.platform)}</span><span>↗</span></a>`).join('');
