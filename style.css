@@ -300,9 +300,6 @@ section{ padding: 110px clamp(20px, 6vw, 80px); position:relative; min-width:0; 
 .section-copy{ font-size: 1.05rem; line-height:1.65; max-width: 62ch; opacity:.8; }
 .section-copy em{ color: var(--gold); font-style: normal; }
 
-.qr-scanner{ background:var(--green-ink); border-top:1px solid var(--green-line); border-bottom:1px solid var(--green-line); }
-.scanner-actions{ display:flex; gap:12px; flex-wrap:wrap; margin-top:24px; }
-.qr-scanner-video{ width:min(420px,100%); margin-top:20px; border:1px solid var(--gold); border-radius:var(--radius-md); background:#000; }
 
 /* ===================================================================
    ROLES

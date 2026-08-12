@@ -41,7 +41,7 @@
       const esc = value => String(value ?? '').replace(/[&<>'"]/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
       const safeUrl = value => { try { const url = new URL(value); return /^https?:$/.test(url.protocol) ? url.href : '#'; } catch (_) { return '#'; } };
       const links = (data.socials || []).map(s => `<a href="${esc(safeUrl(s.url))}" target="_blank" rel="noopener"><span>${esc(s.platform)}</span><span>↗</span></a>`).join('');
-      root.innerHTML = `<div class="profile-mark">HH</div><div class="profile-kicker">Hacker House Goa 2026 · Builder</div><h1>${esc(data.name)}</h1><p class="profile-title">${esc(data.title)}</p><div class="profile-meta"><div><strong>Builder ID</strong><span>${esc(data.builderId)}</span></div><div><strong>Team</strong><span>${esc(data.team)}</span></div><div><strong>Tech stack</strong><span>${esc(data.stack)}</span></div></div><div class="profile-kicker">Connect with ${esc(data.name)}</div><div class="socials">${links || '<p>No social links added.</p>'}</div>`;
+      root.innerHTML = `<div class="profile-mark">HH</div><div class="profile-kicker">Hacker House Goa 2026 · Builder profile</div><h1>${esc(data.name)}</h1><p class="profile-title">${esc(data.title)}</p><div class="profile-meta"><div><strong>Builder ID</strong><span>${esc(data.builderId)}</span></div><div><strong>Team</strong><span>${esc(data.team)}</span></div><div><strong>Tech stack</strong><span>${esc(data.stack)}</span></div></div><div class="profile-kicker">Tap to connect with ${esc(data.name)}</div><div class="socials">${links || '<p>No social links added.</p>'}</div>`;
     } catch (error) {
       root.innerHTML = '<p class="error">This builder profile link is invalid or incomplete.</p>';
     }

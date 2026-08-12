@@ -414,7 +414,6 @@
     // Give phone cameras a larger, unobstructed QR target on the card.
     const qrSize = 220;
     const qrY = H - 300;
-    const websiteQrX = 120;
     const profileQrX = W - 340;
     const right = profileQrX - 40;
     const contentW = right - left;
@@ -529,8 +528,7 @@
       ctx.fillStyle = "#f0b429";
       ctx.fillText(labelText, qrX + qrSize/2, qrY + qrSize + 34);
     }
-    drawQr(data.websiteQrCanvas, websiteQrX, "SCAN WEBSITE");
-    drawQr(data.qrCanvas, profileQrX, "SCAN PROFILE");
+    drawQr(data.qrCanvas, profileQrX, "SCAN TO CONNECT");
   }
 
   function roundRect(ctx, x, y, w, h, r){
@@ -566,10 +564,6 @@
     const url = new URL("/profile.html", window.location.origin);
     url.searchParams.set("data", encodeProfileData(data));
     return url.href;
-  }
-
-  function makeWebsiteUrl(){
-    return new URL("/", window.location.origin).href;
   }
 
   /* ---------------- FORM SUBMIT ---------------- */
@@ -631,9 +625,8 @@
     const profileUrl = makeProfileUrl(profileData);
     console.log("Encoded QR profile:", profileUrl);
     const qrCanvas = await generateQRCode(profileUrl);
-    const websiteQrCanvas = await generateQRCode(makeWebsiteUrl());
 
-    if (!qrCanvas || !websiteQrCanvas) {
+    if (!qrCanvas) {
       formError.textContent = "The QR code could not be generated. Refresh and try again.";
       generateBtn.disabled = false;
       generateBtn.textContent = "Generate my builder ID";
@@ -645,8 +638,7 @@
       builderId: profileData.builderId,
       photoImage,
       photoTransform,
-      qrCanvas,
-      websiteQrCanvas
+      qrCanvas
     };
 
     // make sure custom fonts are actually loaded before drawing to canvas,
@@ -715,63 +707,6 @@
     setTimeout(() => {
       toast.style.transform = "translateX(-50%) translateY(150%)";
     }, 4000);
-  });
-
-  /* ---------------- PROFILE QR SCANNER ---------------- */
-  const scannerVideo = document.getElementById("qrScannerVideo");
-  const scannerStatus = document.getElementById("qrScannerStatus");
-  const startScanner = document.getElementById("startScanner");
-  const qrImageInput = document.getElementById("qrImageInput");
-  let scannerStream = null;
-  let scannerFrame = null;
-
-  function openScannedProfile(value){
-    try {
-      const url = new URL(value, window.location.href);
-      if (url.origin === window.location.origin && url.pathname.endsWith("/profile.html")) {
-        window.location.href = url.href;
-        return true;
-      }
-    } catch (_) {}
-    return false;
-  }
-
-  async function scanFromCamera(){
-    if (!("BarcodeDetector" in window)) {
-      scannerStatus.textContent = "Camera QR scanning is not supported here. Use Upload QR image instead.";
-      return;
-    }
-    try {
-      const detector = new BarcodeDetector({ formats: ["qr_code"] });
-      scannerStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
-      scannerVideo.hidden = false;
-      scannerVideo.srcObject = scannerStream;
-      await scannerVideo.play();
-      scannerStatus.textContent = "Point your camera at the profile QR code…";
-      const scan = async () => {
-        if (!scannerStream) return;
-        const codes = await detector.detect(scannerVideo).catch(() => []);
-        if (codes[0]?.rawValue && openScannedProfile(codes[0].rawValue)) return;
-        scannerFrame = requestAnimationFrame(scan);
-      };
-      scan();
-    } catch (_) {
-      scannerStatus.textContent = "Camera permission was denied or unavailable. Use Upload QR image instead.";
-    }
-  }
-
-  startScanner.addEventListener("click", scanFromCamera);
-  qrImageInput.addEventListener("change", async () => {
-    if (!qrImageInput.files[0] || !("BarcodeDetector" in window)) {
-      scannerStatus.textContent = "Your browser cannot decode QR images. Try the camera scanner.";
-      return;
-    }
-    const detector = new BarcodeDetector({ formats: ["qr_code"] });
-    const bitmap = await createImageBitmap(qrImageInput.files[0]);
-    const codes = await detector.detect(bitmap).catch(() => []);
-    bitmap.close();
-    if (codes[0]?.rawValue && openScannedProfile(codes[0].rawValue)) return;
-    scannerStatus.textContent = "No builder profile QR was found in that image.";
   });
 
   document.getElementById("regenerateBtn").addEventListener("click", () => {
