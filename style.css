@@ -327,7 +327,10 @@ section{ padding: 110px clamp(20px, 6vw, 80px); position:relative; min-width:0; 
   display:grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 60px;
   align-items:start;
 }
-@media (max-width: 900px){ .register{ grid-template-columns: 1fr; gap: 40px; } }
+@media (max-width: 900px){
+  .register{ grid-template-columns: 1fr; gap: 40px; }
+  .register-intro{ position:static; }
+}
 .register-intro{ position:sticky; top: 110px; }
 .register-notes{ list-style:none; margin: 28px 0 0; padding:0; display:flex; flex-direction:column; gap:14px; }
 .register-notes li{
