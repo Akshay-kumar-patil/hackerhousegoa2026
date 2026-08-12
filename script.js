@@ -479,7 +479,6 @@
       "GitHub": "gh/",
       "Instagram": "ig/",
       "Website": "🔗",
-      "Linktree": "🌲",
       "Other": "🔗"
     };
 
