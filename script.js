@@ -403,8 +403,9 @@
     if (templateBack) ctx.drawImage(templateBack, 0, 0, W, H);
 
     const left = 140;
-    const qrSize = 200;
-    const qrX = W - 260;
+    // Give phone cameras a larger, unobstructed QR target on the card.
+    const qrSize = 280;
+    const qrX = W - 340;
     const qrY = H - 280;
     const right = qrX - 40;
     const contentW = right - left;
@@ -512,20 +513,9 @@
       // Draw QR
       ctx.drawImage(data.qrCanvas, qrX, qrY, qrSize, qrSize);
       
-      // Draw HH in middle
-      // Small center mark; leaving most QR modules unobstructed improves scanning.
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(qrX + qrSize/2 - 16, qrY + qrSize/2 - 12, 32, 24);
-      ctx.fillStyle = "#f0b429";
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
-      ctx.font = "900 22px Bricolage Grotesque, sans-serif";
-      ctx.fillText("HH", qrX + qrSize/2, qrY + qrSize/2 + 2);
-      ctx.textBaseline = "alphabetic"; // reset
-      
       // Draw SCAN TO CONNECT
       ctx.textAlign = "center";
-      ctx.font = "600 18px JetBrains Mono, monospace";
+      ctx.font = "600 16px JetBrains Mono, monospace";
       ctx.fillStyle = "#f0b429";
       ctx.fillText("SCAN TO CONNECT", qrX + qrSize/2, qrY + qrSize + 34);
     }
