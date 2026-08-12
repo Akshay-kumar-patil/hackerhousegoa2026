@@ -264,7 +264,7 @@
         colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
       });
-      setTimeout(() => {
+      const resolveQr = () => {
         // QRCode.js may render a canvas or an image. Normalize either result
         // to a canvas so the preview and downloaded back use the same QR.
         const qrCanvas = qrContainer.querySelector("canvas");
@@ -282,7 +282,15 @@
         normalized.height = 400;
         normalized.getContext("2d").drawImage(qrImage, 0, 0, 400, 400);
         resolve(normalized);
-      }, 50); // wait for qr to render
+      };
+      if (qrContainer.querySelector("canvas")) {
+        resolveQr();
+      } else {
+        const qrImage = qrContainer.querySelector("img");
+        if (qrImage && qrImage.complete) resolveQr();
+        else if (qrImage) qrImage.addEventListener("load", resolveQr, { once:true });
+        else resolve(null);
+      }
     });
   }
 
@@ -644,7 +652,9 @@
     // make sure custom fonts are actually loaded before drawing to canvas,
     // otherwise the first render can fall back to a system font
     if (document.fonts && document.fonts.ready){
-      try{ await document.fonts.ready; }catch(e){}
+      try{
+        await Promise.race([document.fonts.ready, new Promise(resolve => setTimeout(resolve, 120))]);
+      }catch(e){}
     }
 
     renderFront(canvasFront, currentData);
