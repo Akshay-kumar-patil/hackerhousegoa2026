@@ -555,7 +555,9 @@
   }
 
   function makeProfileUrl(data){
-    const url = new URL("profile.html", window.location.href);
+    // Always point the QR at this deployed website, never at a local file or
+    // a temporary route from which the badge was generated.
+    const url = new URL("/profile.html", window.location.origin);
     url.searchParams.set("data", encodeProfileData(data));
     return url.href;
   }
