@@ -35,6 +35,7 @@
   <nav class="nav-links">
     <a href="#register">Register</a>
     <a href="#card">Builder ID</a>
+    <a href="#scanner">Scan profile</a>
   </nav>
   <a href="#register" class="btn btn-ghost nav-cta">Get your badge</a>
 </header>
@@ -87,6 +88,20 @@
     </div>
   </div>
   <div class="scroll-cue" aria-hidden="true"><span></span> scroll</div>
+</section>
+
+<!-- ============ PROFILE SCANNER ============ -->
+<section class="qr-scanner" id="scanner">
+  <p class="section-eyebrow">Scan a builder</p>
+  <h2 class="section-title">Open a builder profile.</h2>
+  <p class="section-copy">Use this scanner on the website QR, then scan the profile QR on a builder badge.</p>
+  <div class="scanner-actions">
+    <button class="btn btn-primary" id="startScanner" type="button">Open camera scanner</button>
+    <label class="btn btn-outline" for="qrImageInput">Upload QR image</label>
+    <input id="qrImageInput" type="file" accept="image/*" capture="environment">
+  </div>
+  <video id="qrScannerVideo" class="qr-scanner-video" playsinline muted hidden></video>
+  <p id="qrScannerStatus" class="field-hint" role="status">Camera scanning is supported on modern mobile browsers.</p>
 </section>
 
 <!-- ============ REGISTER FORM ============ -->
