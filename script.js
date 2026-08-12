@@ -259,8 +259,9 @@
         text: text,
         width: 400,
         height: 400,
-        colorDark : "#f0b429", // gold
-        colorLight : "#0b2818", // dark green quiet zone
+        // Keep the QR camera-friendly: dark modules on a white background.
+        colorDark : "#0b2818",
+        colorLight : "#ffffff",
         correctLevel : QRCode.CorrectLevel.H
       });
       setTimeout(() => {
@@ -512,8 +513,9 @@
       ctx.drawImage(data.qrCanvas, qrX, qrY, qrSize, qrSize);
       
       // Draw HH in middle
-      ctx.fillStyle = "#0b2818";
-      ctx.fillRect(qrX + qrSize/2 - 24, qrY + qrSize/2 - 18, 48, 36);
+      // Small center mark; leaving most QR modules unobstructed improves scanning.
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(qrX + qrSize/2 - 16, qrY + qrSize/2 - 12, 32, 24);
       ctx.fillStyle = "#f0b429";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
